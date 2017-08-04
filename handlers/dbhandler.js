@@ -21,7 +21,7 @@ var dbHandler = {
         return new Promise(function (resolve, reject) {
             return models.users.findOne({email:data.email}).then(function (email,err) {
                 if(email){
-                    reject("Email Already Exists")
+                  return  reject("Email Already Exists")
                 }
                 if(err)reject(err);
                 return models.users.create({
@@ -50,7 +50,6 @@ var dbHandler = {
                 }).catch(function (error) {
                     reject(error)
                 })
-
         });
     },
     login : function (data) {
