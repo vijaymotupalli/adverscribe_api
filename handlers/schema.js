@@ -10,14 +10,25 @@ var userSchema = new mongoose.Schema({
 },{ versionKey:false, timestamps:true})
 
 
+var taskSchema = new mongoose.Schema({
+    title:{type:String,required:true},
+    description:{type:String},
+    startDate:{type:Date,required:true},
+    endDate:{type:Date,required:true},
+    assignTo:{type:String,required:true},
+    status:{type:String}
+},{ versionKey:false, timestamps:true})
+
 //plugins
 userSchema.plugin(customId, {mongoose: mongoose});
 
 
 //models
+var tasks = mongoose.model('tasks',taskSchema,'tasks');
 var users = mongoose.model('users',userSchema,'users');
 
 //exports
 
 
 exports.users = users;
+exports.tasks = tasks;

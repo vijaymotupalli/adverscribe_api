@@ -40,6 +40,19 @@ var dbHandler = {
             })
         });
     },
+    addTask : function (taskData) {
+        return new Promise(function (resolve, reject) {
+                return models.tasks.create(taskData).then(function (task, err) {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(task)
+                }).catch(function (error) {
+                    reject(error)
+                })
+
+        });
+    },
     getUsers : function () {
         return new Promise(function (resolve, reject) {
             console.log("---iam in above users---")
@@ -47,6 +60,16 @@ var dbHandler = {
                 console.log("---iam in gt users---")
                 if(err)reject(err);
                     resolve(users)
+                }).catch(function (error) {
+                    reject(error)
+                })
+        });
+    },
+    getTasks : function () {
+        return new Promise(function (resolve, reject) {
+            return models.tasks.find({}).then(function (tasks,err) {
+                if(err)reject(err);
+                    resolve(tasks)
                 }).catch(function (error) {
                     reject(error)
                 })
