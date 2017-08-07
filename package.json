@@ -13,6 +13,7 @@
     "expressjs-api-explorer": "^1.0.2",
     "jade": "~1.11.0",
     "jwt-simple": "^0.5.1",
+    "moment": "^2.18.1",
     "mongodb": "^2.2.29",
     "mongoose": "^4.11.0",
     "mongoose-hook-custom-id": "^0.1.4",

@@ -1,6 +1,7 @@
 //Write All Mongo Queries Here
 var config = require('../config/index');
 var mongoose = require('mongoose');
+var moment = require('moment');
 var models = require('../handlers/schema');
 
 mongoose.connect(config.db.host,{user:config.db.username,pass:config.db.password,auth: {
@@ -74,6 +75,42 @@ var dbHandler = {
                     reject(error)
                 })
         });
+    },
+    getUserTasks : function (userData) {
+        return new Promise(function (resolve, reject) {
+            return models.users.aggregate([
+                {$match:{email:userData.email}},
+                {$lookup:{
+                    from:'tasks',
+                    localField:'_id',
+                    foreignField:'assignTo',
+                    as:'tasks'
+                }},
+                {$project:{todayTasks: {
+                    $filter: {
+                        input: "$tasks",
+                        as: "task",
+                        cond: { $eq: [ {$dateToString: { format: "%d-%m-%Y", date: "$$task.startDate" }},moment().format("DD-MM-YYYY")]}
+                    }
+                },upcomingTasks: {
+                    $filter: {
+                        input: "$tasks",
+                        as: "task",
+                        cond: { $gt: [{$dateToString: { format: "%d-%m-%Y", date: "$$task.startDate" }}, moment().format("DD-MM-YYYY")]}
+                    }
+                },pendingTasks: {
+                    $filter: {
+                        input: "$tasks",
+                        as: "task",
+                        cond: { $lt: [{$dateToString: { format: "%d-%m-%Y", date: "$$task.startDate" }}, moment().format("DD-MM-YYYY")]}
+                    }
+                }}}
+            ],function (err,tasks) {
+                if(!err)
+                resolve(tasks.pop());
+                reject(err);
+            })
+        })
     },
     login : function (data) {
         return new Promise(function(resolve,reject){

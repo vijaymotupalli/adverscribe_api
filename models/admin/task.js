@@ -46,6 +46,27 @@ var task = {
             });
         });
     },
+    getUserTasks:function (req,res) {
+        var email = req.params.userId
+        if(!email){
+            return res.status(400).json({
+                title:"Email require to see tasks",
+                msg:"please enter email"
+            })
+        }
+        var userData = {email:email}
+        dbhandler.getUserTasks(userData).then(function (userTasks) {
+            return res.json(userTasks)
+        },function (errMsg) {
+            res.status(400);
+            return res.json({
+                status: 400,
+                title: 'Fail To Get User Tasks',
+                msg: errMsg
+            });
+        });
+    },
+
 }
 
 module.exports = task
