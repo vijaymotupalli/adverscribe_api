@@ -41,6 +41,20 @@ var user = {
             });
         });
     },
+    getUserDetails:function (req,res) {
+        var email = req.params.email
+        var userData = {email:email}
+        dbhandler.getUserDetails(userData).then(function (user) {
+            return res.json(user)
+        },function (errMsg) {
+            res.status(400);
+            return res.json({
+                status: 400,
+                title: 'Fail To Get Users',
+                msg: errMsg
+            });
+        });
+    },
 }
 
 module.exports = user

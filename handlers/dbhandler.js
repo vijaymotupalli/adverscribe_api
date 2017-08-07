@@ -66,6 +66,18 @@ var dbHandler = {
                 })
         });
     },
+    getUserDetails : function (userData) {
+        return new Promise(function (resolve, reject) {
+            console.log("---iam in above users---")
+            return models.users.findOne({email:userData.email}).then(function (user,err) {
+                console.log("---iam in gt users---")
+                if(err)reject(err);
+                    resolve(user)
+                }).catch(function (error) {
+                    reject(error)
+                })
+        });
+    },
     getTasks : function () {
         return new Promise(function (resolve, reject) {
             return models.tasks.find({}).then(function (tasks,err) {
