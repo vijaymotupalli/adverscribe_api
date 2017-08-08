@@ -8,22 +8,27 @@ var authentication = {
         var email = req.body.email;
         if(!email){
             return res.status(400).json({
-                title: 'Please Enter Valid Email',
-                msg: "Email is required"
+                title:"Login Fail",
+                msg:"Email Required"
             })
         }
-        var data = {
-            email:email
-        }
+        var data = {email:email}
         dbhandler.login(data).then(function (user) {
             if(!user){
                 return res.status(401).json({
-                    title: 'User Not Found',
-                    msg: "Please Contact Admin"
+                    title: 'Invalid credentials',
+                    msg: "Incorrect Username & Password "
                 })
             }
-            return res.status(200).json(user)
-
+            try{
+                user.access_token =  jwt.generateAuthToken(user);
+                return res.json(user)
+            }catch(err){
+                return res.status(400).json({
+                    title: 'Login Fail',
+                    msg: err
+                })
+            }
         },function (errMsg) {
             res.status(400);
             return res.json({
@@ -35,8 +40,6 @@ var authentication = {
     }
 
 
-
-    
 }
 
 module.exports = authentication

@@ -17,7 +17,18 @@ mongoose.connect(config.db.host,{user:config.db.username,pass:config.db.password
 var db = mongoose.connection.db ;
 
 var dbHandler = {
-
+    getRoles : function () {
+        return new Promise(function(resolve,reject){
+            db.collection('roles', function(err, collection) {
+                collection.find().toArray(function (err,roles) {
+                    if(!err){
+                        resolve(roles)
+                    }
+                    reject(err);
+                })
+            });
+        });
+    },
     addUser : function (data) {
         return new Promise(function (resolve, reject) {
             return models.users.findOne({email:data.email}).then(function (email,err) {
@@ -126,18 +137,22 @@ var dbHandler = {
     },
     login : function (data) {
         return new Promise(function(resolve,reject){
-           return models.users.findOne({email:data.email,isActive:true}).then(function(user,err){
-                if(err){
-                    reject(err);
-                }
-                resolve(user)
-            }).catch(function (error) {
-               reject(error)
-           })
-
+            models.users.aggregate([
+                    {"$match": { email:data.email,isActive:true}},
+                    {$lookup: {
+                        from: "roles",
+                        localField: "role",
+                        foreignField: "role",
+                        as: "role"
+                    }},{$addFields:{role:{ $arrayElemAt: [ "$role", 0 ] }}},{$project:{"role._id":0}}
+                ],
+                function (err,user) {
+                    if(!err){
+                            resolve(user.pop())
+                    }reject(err);
+                })
         });
     }
-
 
 }
 

@@ -37,6 +37,7 @@ app.all('/*', function(req, res, next) {
     }
 });
 app.use('/uploads',express.static(path.join(__dirname, 'static/uploads')));
+app.all('/api/*', [require('./middleware/validateAdmin')]);
 
 
 admin_routes(app);
