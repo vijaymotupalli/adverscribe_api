@@ -35,7 +35,7 @@ var task = {
         });
     },
     getTasks:function (req,res) {
-        dbhandler.getTasks().then(function (tasks) {
+      return  dbhandler.getTasks().then(function (tasks) {
             return res.json(tasks)
         },function (errMsg) {
             res.status(400);

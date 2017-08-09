@@ -29,6 +29,30 @@ var user = {
             });
         });
     },
+    editUser:function (req,res) {
+
+        var email = req.body.email;
+        var name = req.body.name;
+        var role = req.body.role;
+        var isActive = req.body.isActive;
+
+        var userData = {
+            email:email,
+            name:name,
+            role:role,
+            isActive:isActive
+        }
+        dbhandler.editUser(userData).then(function (user) {
+            return res.json(user)
+        },function (errMsg) {
+            res.status(400);
+            return res.json({
+                status: 400,
+                title: 'Fail To Edit User',
+                msg: errMsg
+            });
+        });
+    },
     getUsers:function (req,res) {
         dbhandler.getUsers().then(function (users) {
             return res.json(users)

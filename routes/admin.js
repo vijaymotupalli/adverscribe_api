@@ -6,6 +6,7 @@ var roles = require('../models/admin/roles');
 module.exports = function (app) {
 
     app.post('/api/users',users.addUser);
+    app.put('/api/users',users.editUser);
     app.post('/api/tasks',tasks.addTask);
     app.get('/api/users',users.getUsers);
     app.get('/api/users/roles',roles.getRoles);

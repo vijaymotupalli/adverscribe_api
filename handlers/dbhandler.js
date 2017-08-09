@@ -52,6 +52,23 @@ var dbHandler = {
             })
         });
     },
+    editUser : function (data) {
+        return new Promise(function (resolve, reject) {
+                return models.users.update({email:data.email},{
+                    name: data.name,
+                    role: data.role,
+                    isActive: data.isActive
+                }).then(function (user, err) {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(user)
+                }).catch(function (error) {
+                    reject(error)
+                })
+
+        });
+    },
     addTask : function (taskData) {
         return new Promise(function (resolve, reject) {
                 return models.tasks.create(taskData).then(function (task, err) {
@@ -91,11 +108,18 @@ var dbHandler = {
     },
     getTasks : function () {
         return new Promise(function (resolve, reject) {
-            return models.tasks.find({}).then(function (tasks,err) {
-                if(err)reject(err);
-                    resolve(tasks)
-                }).catch(function (error) {
-                    reject(error)
+            return models.tasks.aggregate([
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "assignTo",
+                        foreignField: "_id",
+                        as: "assignTo"
+                    }
+                },{$addFields:{"assignTo":{ $arrayElemAt: [ "$assignTo", 0 ] }}},{$project:{"assignTo.createdAt":0,"assignTo.updatedAt":0,"assignTo.role":0,"assignTo._id":0}}
+            ],function (err,tasks) {
+                if(!err)resolve(tasks)
+                reject(err)
                 })
         });
     },
