@@ -16,7 +16,7 @@ module.exports = function (app) {
     app.post('/login',auth.login);
     app.post('/api/userlog',auth.addUserLog);
     app.put('/api/userlog',auth.editUserLog);
-    app.get('/api/userlog',users.getUserLog);
+    app.get('/api/userlog/:userId',users.getUserLog);
 
 }
 

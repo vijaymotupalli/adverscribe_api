@@ -80,8 +80,8 @@ var user = {
         });
     },
     getUserLog:function (req,res) {
-        var email = req.params.email
-        var userData = {useId:email}
+        var userId = req.params.userId
+        var userData = {userId:userId}
         dbhandler.getUserLog(userData).then(function (userLog) {
             return res.json(userLog)
         },function (errMsg) {

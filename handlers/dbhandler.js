@@ -218,8 +218,9 @@ var dbHandler = {
         });
     },
     getUserLog : function (userData) {
+        console.log(userData);
         return new Promise(function (resolve, reject) {
-            return models.userLog.find({userId:userData.userId}).sort({createdAt: -1}).then(function (userLog,err) {
+            return models.userLog.find({userId:userData.userId }).then(function (userLog,err) {
                 if(err)reject(err);
                 resolve(userLog)
             }).catch(function (error) {
