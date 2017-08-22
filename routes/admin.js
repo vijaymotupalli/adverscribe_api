@@ -14,6 +14,9 @@ module.exports = function (app) {
     app.get('/api/tasks/:userId',tasks.getUserTasks);
     app.get('/api/tasks',tasks.getTasks);
     app.post('/login',auth.login);
+    app.post('/api/userlog',auth.addUserLog);
+    app.put('/api/userlog',auth.editUserLog);
+    app.get('/api/userlog',users.getUserLog);
 
 }
 

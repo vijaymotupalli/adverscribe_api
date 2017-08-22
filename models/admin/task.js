@@ -66,6 +66,38 @@ var task = {
             });
         });
     },
+    editTask:function (req,res) {
+
+        var title = req.body.title;
+        var description = req.body.description;
+        var startDate = req.body.startDate;
+        var endDate = req.body.endDate;
+        var assignTo = req.body.assignTo;
+        var status = req.body.status;
+        var taskId = req.body.taskId;
+
+
+        var taskData = {
+            title:title,
+            description:description,
+            startDate:startDate,
+            endDate:endDate,
+            assignTo:assignTo,
+            status:status
+        }
+
+        dbhandler.editTask(taskId,taskData).then(function (task) {
+            return res.status(200).json(task)
+        },function (errMsg) {
+            res.status(400);
+            return res.json({
+                status: 400,
+                title: 'Fail To Edit Task',
+                msg: errMsg
+            });
+        });
+    },
+
 
 }
 
