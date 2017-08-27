@@ -69,6 +69,26 @@ var dbHandler = {
 
         });
     },
+    editTask : function (taskId,data) {
+        return new Promise(function (resolve, reject) {
+            return models.tasks.update({_id:taskId},{
+                title: data.title,
+                description: data.description,
+                startDate: data.startDate,
+                endDate: data.endDate,
+                assignTo: data.assignTo,
+                status:data.status
+            }).then(function (user, err) {
+                if (err) {
+                    reject(err);
+                }
+                resolve(user)
+            }).catch(function (error) {
+                reject(error)
+            })
+
+        });
+    },
     addTask : function (taskData) {
         return new Promise(function (resolve, reject) {
                 return models.tasks.create(taskData).then(function (task, err) {
@@ -116,8 +136,9 @@ var dbHandler = {
                         foreignField: "_id",
                         as: "assignTo"
                     }
-                },{$addFields:{"assignTo":{ $arrayElemAt: [ "$assignTo", 0 ] }}},{$project:{"assignTo.createdAt":0,"assignTo.updatedAt":0,"assignTo.role":0,"assignTo._id":0}}
+                },{$addFields:{"assignTo":{ $arrayElemAt: [ "$assignTo", 0 ] }}},{$project:{"assignTo.createdAt":0,"assignTo.updatedAt":0,"assignTo.role":0}}
             ],function (err,tasks) {
+                console.log(tasks);
                 if(!err)resolve(tasks)
                 reject(err)
                 })
@@ -133,7 +154,8 @@ var dbHandler = {
                     foreignField:'assignTo',
                     as:'tasks'
                 }},
-                {$project:{todayTasks: {
+                {$project:{name:1,
+                    todayTasks: {
                     $filter: {
                         input: "$tasks",
                         as: "task",
@@ -151,7 +173,7 @@ var dbHandler = {
                         as: "task",
                         cond: { $lt: [{$dateToString: { format: "%d-%m-%Y", date: "$$task.startDate" }}, moment().format("DD-MM-YYYY")]}
                     }
-                }}}
+                }}},{$addFields:{"upcomingTasks.assignTo":{name:"$name",_id:"$_id"},"todayTasks.assignTo":{name:"$name",_id:"$_id"},"pendingTasks.assignTo":{name:"$name",_id:"$_id"}}}
             ],function (err,tasks) {
                 if(!err)
                 resolve(tasks.pop());

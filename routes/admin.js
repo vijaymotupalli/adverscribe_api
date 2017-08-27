@@ -8,6 +8,7 @@ module.exports = function (app) {
     app.post('/api/users',users.addUser);
     app.put('/api/users',users.editUser);
     app.post('/api/tasks',tasks.addTask);
+    app.put('/api/tasks',tasks.editTask);
     app.get('/api/users',users.getUsers);
     app.get('/api/users/roles',roles.getRoles);
     app.get('/api/users/:email',users.getUserDetails);
