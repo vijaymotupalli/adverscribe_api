@@ -19,6 +19,14 @@ var taskSchema = new mongoose.Schema({
     status:{type:String}
 },{ versionKey:false, timestamps:true})
 
+
+var logSchema = new mongoose.Schema({
+    date:{type:Date,default: Date.now},
+    signInTime:{type:Date,required:true},
+    signOutTime:{type:Date},
+    userId:{type:String,required:true}
+},{ versionKey:false, timestamps:true})
+
 //plugins
 userSchema.plugin(customId, {mongoose: mongoose});
 
@@ -26,9 +34,11 @@ userSchema.plugin(customId, {mongoose: mongoose});
 //models
 var tasks = mongoose.model('tasks',taskSchema,'tasks');
 var users = mongoose.model('users',userSchema,'users');
+var userLog = mongoose.model('userLog',logSchema,'userLog');
 
 //exports
 
 
 exports.users = users;
 exports.tasks = tasks;
+exports.userLog = userLog;

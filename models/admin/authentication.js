@@ -37,9 +37,73 @@ var authentication = {
             });
         })
 
-    }
+    },
+    addUserLog:function (req,res) {
+        var userId = req.body.userId;
+        var signInTime = req.body.signInTime
+        if(!userId){
+            return res.status(400).json({
+                title:"Log Fail",
+                msg:"UserId Required"
+            })
+        }
+        if(!signInTime){
+            return res.status(400).json({
+                title:"Log Fail",
+                msg:"signInTime Required"
+            })
+        }
+        var data = {userId:userId,signInTime:signInTime}
 
+        dbhandler.addUserLog(data).then(function (userLog) {
+                if (!userLog) {
+                    return res.status(400).json({
+                        title: 'Log Fail',
+                        msg: "Something Went Wrong "
+                    })
+                }
+                return res.status(200).json(userLog)
+            },function (errMsg) {
+            res.status(400);
+            return res.json({
+                title: 'Log Fail',
+                msg: errMsg
+            });
+        })
+    },
+    editUserLog:function (req,res) {
+        var logId = req.body.logId;
+        var signOutTime = req.body.signOutTime
+        if(!logId){
+            return res.status(400).json({
+                title:"Log Fail",
+                msg:"logId Required"
+            })
+        }
+        if(!signOutTime){
+            return res.status(400).json({
+                title:"Log Fail",
+                msg:"signOutTime Required"
+            })
+        }
+        var data = {signOutTime:signOutTime}
 
+        dbhandler.editUserLog(logId,data).then(function (userLog) {
+                if (!userLog) {
+                    return res.status(400).json({
+                        title: 'Log Fail',
+                        msg: "Something Went Wrong "
+                    })
+                }
+                return res.status(200).json(userLog)
+            },function (errMsg) {
+            res.status(400);
+            return res.json({
+                title: 'Log Fail',
+                msg: errMsg
+            });
+        })
+    },
 }
 
 module.exports = authentication

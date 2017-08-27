@@ -79,6 +79,21 @@ var user = {
             });
         });
     },
+    getUserLog:function (req,res) {
+        var userId = req.params.userId
+        var userData = {userId:userId}
+        dbhandler.getUserLog(userData).then(function (userLog) {
+            return res.json(userLog)
+        },function (errMsg) {
+            res.status(400);
+            return res.json({
+                status: 400,
+                title: 'Fail To Get User Log',
+                msg: errMsg
+            });
+        });
+
+    }
 }
 
 module.exports = user

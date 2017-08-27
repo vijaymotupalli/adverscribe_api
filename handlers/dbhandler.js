@@ -102,6 +102,19 @@ var dbHandler = {
 
         });
     },
+    editTask : function (taskId,taskData) {
+        return new Promise(function (resolve, reject) {
+            return models.tasks.update({_id:taskId},taskData).then(function (task, err) {
+                if (err) {
+                    reject(err);
+                }
+                resolve(task)
+            }).catch(function (error) {
+                reject(error)
+            })
+
+        });
+    },
     getUsers : function () {
         return new Promise(function (resolve, reject) {
             console.log("---iam in above users---")
@@ -198,7 +211,46 @@ var dbHandler = {
                     }reject(err);
                 })
         });
-    }
+    },
+    addUserLog : function (data) {
+        return new Promise(function(resolve,reject){
+                return models.userLog.create({
+                    userId: data.userId,
+                    signInTime: data.signInTime
+                }).then(function (userLog, err) {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(userLog)
+                }).catch(function (error) {
+                    reject(error)
+                })
+        });
+    },
+    editUserLog : function (logId,data) {
+        return new Promise(function(resolve,reject){
+                return models.userLog.update({_id:logId},{signOutTime:data.signOutTime}).then(function (userLog, err) {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(userLog)
+                }).catch(function (error) {
+                    reject(error)
+                })
+        });
+    },
+    getUserLog : function (userData) {
+        console.log(userData);
+        return new Promise(function (resolve, reject) {
+            return models.userLog.find({userId:userData.userId }).then(function (userLog,err) {
+                if(err)reject(err);
+                resolve(userLog)
+            }).catch(function (error) {
+                reject(error)
+            })
+        });
+    },
+
 
 }
 
