@@ -1,5 +1,6 @@
 var dbhandler = require('../../handlers/dbhandler');
 var jwt = require('../../utils/jwt');
+var moment = require("moment")
 
 var authentication = {
     
@@ -40,7 +41,7 @@ var authentication = {
     },
     addUserLog:function (req,res) {
         var userId = req.body.userId;
-        var signInTime = req.body.signInTime
+        var signInTime = moment();
         if(!userId){
             return res.status(400).json({
                 title:"Log Fail",
@@ -72,8 +73,9 @@ var authentication = {
         })
     },
     editUserLog:function (req,res) {
+        console.log("----rebody----",req.body)
         var logId = req.body.logId;
-        var signOutTime = req.body.signOutTime
+        var signOutTime = moment()
         if(!logId){
             return res.status(400).json({
                 title:"Log Fail",

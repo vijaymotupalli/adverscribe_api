@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
 materializedPathPlugin = require('mongoose-materialized'),customId = require('mongoose-hook-custom-id');
+var moment = require('moment')
 
 // Creating  Schemas
 var userSchema = new mongoose.Schema({
@@ -21,7 +22,7 @@ var taskSchema = new mongoose.Schema({
 
 
 var logSchema = new mongoose.Schema({
-    date:{type:Date,default: Date.now},
+    date:{type:Date,default: moment().format("L")},
     signInTime:{type:Date,required:true},
     signOutTime:{type:Date},
     userId:{type:String,required:true}
