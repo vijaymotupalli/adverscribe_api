@@ -117,9 +117,7 @@ var dbHandler = {
     },
     getUsers : function () {
         return new Promise(function (resolve, reject) {
-            console.log("---iam in above users---")
             return models.users.find({}).then(function (users,err) {
-                console.log("---iam in gt users---")
                 if(err)reject(err);
                     resolve(users)
                 }).catch(function (error) {
@@ -129,9 +127,7 @@ var dbHandler = {
     },
     getUserDetails : function (userData) {
         return new Promise(function (resolve, reject) {
-            console.log("---iam in above users---")
             return models.users.findOne({email:userData.email}).then(function (user,err) {
-                console.log("---iam in gt users---")
                 if(err)reject(err);
                     resolve(user)
                 }).catch(function (error) {
@@ -151,7 +147,6 @@ var dbHandler = {
                     }
                 },{$addFields:{"assignTo":{ $arrayElemAt: [ "$assignTo", 0 ] }}},{$project:{"assignTo.createdAt":0,"assignTo.updatedAt":0,"assignTo.role":0}}
             ],function (err,tasks) {
-                console.log(tasks);
                 if(!err)resolve(tasks)
                 reject(err)
                 })
@@ -216,7 +211,8 @@ var dbHandler = {
         return new Promise(function(resolve,reject){
                 return models.userLog.create({
                     userId: data.userId,
-                    signInTime: data.signInTime
+                    signInTime: data.signInTime,
+                    date:data.date
                 }).then(function (userLog, err) {
                     if (err) {
                         reject(err);
@@ -240,20 +236,17 @@ var dbHandler = {
         });
     },
     getUserLog : function (userData) {
-        console.log(userData);
         return new Promise(function (resolve, reject) {
             return models.userLog.aggregate({$match:{userId:userData.userId}},
-                {$group:{_id:"$date",log:{$push:{signIn:"$signInTime",signOut:"$signOutTime"}}}},
-                {$addFields:{date:"$_id"}},
-                {$project:{_id:0}},{$sort:{date:-1}}).then(function (userLog,err) {
+                {$group:{_id:{Day:{ $dayOfMonth: "$date" },Month:{ $month: "$date" },Year:{ $year: "$date" }},log:{$push:{signIn:"$signInTime",signOut:"$signOutTime"}},date:{$first: "$date"}}},
+                {$project:{_id:0}},{$sort:{date:-1,"log.signIn":-1}}).then(function (userLog,err) {
                 if(err)reject(err);
                 resolve(userLog)
             }).catch(function (error) {
                 reject(error)
             })
         });
-    },
-
+    }
 
 }
 

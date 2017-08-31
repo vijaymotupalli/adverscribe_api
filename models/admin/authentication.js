@@ -42,6 +42,7 @@ var authentication = {
     addUserLog:function (req,res) {
         var userId = req.body.userId;
         var signInTime = moment();
+        var date = moment();
         if(!userId){
             return res.status(400).json({
                 title:"Log Fail",
@@ -54,7 +55,7 @@ var authentication = {
                 msg:"signInTime Required"
             })
         }
-        var data = {userId:userId,signInTime:signInTime}
+        var data = {userId:userId,signInTime:signInTime,date:date}
 
         dbhandler.addUserLog(data).then(function (userLog) {
                 if (!userLog) {
