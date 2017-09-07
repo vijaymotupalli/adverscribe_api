@@ -2,6 +2,7 @@ var auth = require('../models/admin/authentication');
 var users = require('../models/admin/user');
 var tasks = require('../models/admin/task');
 var roles = require('../models/admin/roles');
+var timeTracker = require('../models/admin/timeTracker');
 
 module.exports = function (app) {
 
@@ -10,6 +11,9 @@ module.exports = function (app) {
     app.post('/api/tasks',tasks.addTask);
     app.put('/api/tasks',tasks.editTask);
     app.get('/api/users',users.getUsers);
+    app.post('/api/users/date/time',timeTracker.postUserTimeData);
+    app.get('/api/users/date/time',timeTracker.getUserSelectedDateTimeData);
+    app.get('/api/users/month/time',timeTracker.getUserMonthlyTimeData);
     app.get('/api/users/roles',roles.getRoles);
     app.get('/api/users/:email',users.getUserDetails);
     app.get('/api/tasks/:userId',tasks.getUserTasks);
@@ -18,6 +22,7 @@ module.exports = function (app) {
     app.post('/api/userlog',auth.addUserLog);
     app.put('/api/userlog',auth.editUserLog);
     app.get('/api/userlog/:userId',users.getUserLog);
+
 
 }
 

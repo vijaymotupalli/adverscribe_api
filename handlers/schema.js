@@ -28,14 +28,26 @@ var logSchema = new mongoose.Schema({
     userId:{type:String,required:true}
 },{ versionKey:false, timestamps:true})
 
+var timeSchema = new mongoose.Schema({
+    date:{type:Date,required:true},
+    userId:{type:String,required:true},
+    hours:{type:Number,required:true},
+    mins:{type:Number,required:true},
+    project:{type:String,required:true},
+    description:{type:String,required:true}
+})
+
 //plugins
 userSchema.plugin(customId, {mongoose: mongoose});
+timeSchema.plugin(customId, {mongoose: mongoose});
+
 
 
 //models
 var tasks = mongoose.model('tasks',taskSchema,'tasks');
 var users = mongoose.model('users',userSchema,'users');
 var userLog = mongoose.model('userLog',logSchema,'userLog');
+var timeTracker = mongoose.model('timeTracker',timeSchema,'timeTracker');
 
 //exports
 
@@ -43,3 +55,5 @@ var userLog = mongoose.model('userLog',logSchema,'userLog');
 exports.users = users;
 exports.tasks = tasks;
 exports.userLog = userLog;
+exports.timeTracker = timeTracker;
+

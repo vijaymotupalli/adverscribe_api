@@ -16,6 +16,7 @@
     "moment": "^2.18.1",
     "mongodb": "^2.2.29",
     "mongoose": "^4.11.0",
+    "mongoose-dateonly": "^1.0.3",
     "mongoose-hook-custom-id": "^0.1.4",
     "mongoose-materialized": "^0.1.9",
     "morgan": "~1.8.1",

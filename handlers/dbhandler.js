@@ -102,19 +102,19 @@ var dbHandler = {
 
         });
     },
-    editTask : function (taskId,taskData) {
-        return new Promise(function (resolve, reject) {
-            return models.tasks.update({_id:taskId},taskData).then(function (task, err) {
-                if (err) {
-                    reject(err);
-                }
-                resolve(task)
-            }).catch(function (error) {
-                reject(error)
-            })
-
-        });
-    },
+    // editTask : function (taskId,taskData) {
+    //     return new Promise(function (resolve, reject) {
+    //         return models.tasks.update({_id:taskId},taskData).then(function (task, err) {
+    //             if (err) {
+    //                 reject(err);
+    //             }
+    //             resolve(task)
+    //         }).catch(function (error) {
+    //             reject(error)
+    //         })
+    //
+    //     });
+    // },
     getUsers : function () {
         return new Promise(function (resolve, reject) {
             return models.users.find({}).then(function (users,err) {
@@ -246,6 +246,64 @@ var dbHandler = {
                 reject(error)
             })
         });
+    },
+    postUserTimeData :function (timeData) {
+        return new Promise(function(resolve,reject){
+            return models.timeTracker.create(timeData).then(function (timeData, err) {
+                if (err) {
+                    reject(err);
+                }
+                resolve(timeData)
+            }).catch(function (error) {
+                reject(error)
+            })
+        });
+    },
+    getUserSelectedDateTimeData : function (userId,date) {
+        return new Promise(function(resolve,reject){
+            return models.timeTracker.aggregate({$match:{userId:userId,date:new Date(date)}}).then(function (timeData, err) {
+                if (err) {
+                    reject(err);
+                }
+                resolve(timeData)
+            }).catch(function (error) {
+                reject(error)
+            })
+        });
+
+    } ,
+    getUserMonthlyTimeData : function (userId,month,year) {
+
+        console.log("----data----",userId,month,year);
+        return new Promise(function(resolve,reject){
+            return models.timeTracker.aggregate([{$match:{userId:userId}},
+                {
+                    $group : {
+                        _id : { month: { $month: "$date" }, day: { $dayOfMonth: "$date" }, year: { $year: "$date" } },start:{$first: "$date"},
+                        hourstomins: { $sum: { $multiply: [ "$hours", 60 ] }},mins:{$sum:"$mins"}
+                    }
+                },{$match:{"_id.month":month,"_id.year":year}},
+                {$project:{totalMins:{ $add: [ "$hourstomins", "$mins" ] },start:1,_id:0}},
+                {$addFields:{hours:{ $floor: { $divide: [ "$totalMins", 60 ] } },mins:{ $mod: [ "$totalMins", 60 ] },
+                    end:"$start",
+                    start:"$start",
+                    eventClasses: { $literal: "optionalEvent" }}},
+                {$project:{totalMins:0}}
+
+            ]).then(function (monthlyData, err) {
+                if (!err) {
+                    monthlyData.forEach(function (data) {
+                        data.start = moment(data.start).format("YYYY-MM-DD")
+                        data.end = moment(data.end).format("YYYY-MM-DD")
+                    })
+                    resolve(monthlyData)
+                }
+                reject(err);
+            }).catch(function (error) {
+                reject(error)
+            })
+        });
+
     }
 
 }
